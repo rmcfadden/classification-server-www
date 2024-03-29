@@ -14,7 +14,6 @@ impl HttpRequest {
         let request_line =  match requests.first() {
             Some(line) => line,
             None => return Err("request line cannot be empty"),
-
         };
 
         let request_parts  = request_line.split(" ").collect::<Vec<&str>>();
