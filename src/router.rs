@@ -1,5 +1,7 @@
 use crate::http_request::HttpRequest;
 
+use crate::classifiers::classifier_factory::ClassifierFactory;
+
 pub struct Router {}
 
 impl Router {

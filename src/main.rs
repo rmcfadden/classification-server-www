@@ -6,11 +6,15 @@ use async_std::net::TcpStream;
 use futures::stream::StreamExt;
 use async_std::task::spawn;
 use futures::AsyncBufReadExt;
-use http_request::HttpRequest;
-use router::Router;
+use crate::http_request::HttpRequest;
+use crate::router::Router;
 
-mod http_request;
-mod router;
+pub mod http_request;
+pub mod http_response;
+pub mod router;
+pub mod classifiers;
+pub mod models;
+pub mod core;
 
 #[async_std::main]
 async fn main() {
@@ -37,7 +41,6 @@ async fn handle_connection(mut stream: TcpStream ) -> io::Result<()> {
 
     let request: Result<HttpRequest, &str> = HttpRequest::parse(&contents);
     Router::route(request.unwrap()).unwrap();
-
 
     let status_line = "HTTP/1.1 200 OK";
     let response_text = "hello world!";

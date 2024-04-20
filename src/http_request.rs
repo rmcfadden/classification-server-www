@@ -21,7 +21,7 @@ impl HttpRequest {
             return Err("Expected thee parts in request_line: {request_line}");
         }
 
-        let mut url = "https://example.com".to_owned(); // url:parse only supports abslote urls
+        let mut url = "https://example.com".to_owned(); // url:parse only supports absolute urls
         url.push_str(request_parts[1]);
 
         let request = HttpRequest {
