@@ -10,7 +10,13 @@ async-trait = "0.1.80"
 futures = "0.3"
 http = "1.1.0"
 url = "2.5.0"
+json = "0.12.4"
 
- [dependencies.async-std]
- version = "1.6"
- features = ["attributes"]
+[dependencies.async-std]
+version = "1.6"
+features = ["attributes"]
+
+
+[dependencies.sqlx]
+version = "0.7"
+features = ["runtime-async-std", "sqlite"]

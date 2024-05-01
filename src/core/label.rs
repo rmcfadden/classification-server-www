@@ -2,7 +2,7 @@ use std::string::ToString;
 
 #[derive(Debug)]
 pub struct Label <L: ToString, V: ToString> {
-    pub name: L,
+    pub name:  L,
     pub value: V
 }
 

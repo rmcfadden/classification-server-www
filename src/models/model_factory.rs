@@ -1,7 +1,6 @@
 use crate::models::model::Model;
 use crate::models::hashmap_model::HashmapModel;
 
-
 pub struct ModelFactory {}
 
 impl ModelFactory {
