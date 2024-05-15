@@ -4,3 +4,4 @@ pub mod router;
 pub mod classifiers;
 pub mod models;
 pub mod core;
+pub mod data_access;

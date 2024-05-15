@@ -8,13 +8,12 @@ pub struct TextClassifier<'a> {
     pub store: Box<dyn ModelStore<'a, String,String> + 'a>
 }
 
-
 #[async_trait(?Send)]
 impl<'a> Classifier<'a, String, String> for TextClassifier<'a>  { 
     async fn classify(&self, query: &ClassifierQuery<'a>) -> Result<ClassifierResponse<String, String> , String>   {
         let text = query.text;
         let model_name = query.model;
-        let model = match self.store.get(model_name).await {
+        let model = match self.store.get(model_name).await? {
             Some(m) =>  m,
             None=> return Err(format!("cannot find model name {model_name} in the store")),
         };

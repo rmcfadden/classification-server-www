@@ -4,6 +4,7 @@ use std::hash::Hash;
 
 use crate::classifiers::classifier_response::ClassifierResponse;
 use crate::core::label_prediction::LabelPrediction;
+use crate::core::serialize::Serialize;
 use crate::models::model::Model;
 use crate::core::label::Label;
 
@@ -30,5 +31,13 @@ impl<'a,L: ToString + Eq + Hash + Clone, V: ToString + Clone> Model<L,V> for Has
             None  => vec![]
         };
         Ok( ClassifierResponse { predictions })
+    }
+}
+
+impl<L: ToString,V: ToString> Serialize<String> for HashmapModel<L,V> {
+    fn serialize(&self) -> String {
+        let  map = HashMap::<String,String>::new();
+        serde_json::to_string(&map).unwrap();
+        "asdf".to_string()
     }
 }

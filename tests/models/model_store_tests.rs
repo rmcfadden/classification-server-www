@@ -12,8 +12,8 @@ mod tests {
         let model: Box<dyn Model<String, String>> = Box::new(HashmapModel::<String, String>{..Default::default()});
         let mut store = HashmapModelStore::<String>{ map: HashMap::new()};
         let name = "test_model";
-        store.add(name, &model).await;
-        let added_model = store.get(name).await.unwrap();
+        store.add(name, &model).await.unwrap();
+        let added_model = store.get(name).await.unwrap().expect("expected a value");
         assert_eq!(added_model.get_name(), model.get_name());
     }
 }

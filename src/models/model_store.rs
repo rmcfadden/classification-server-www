@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use async_trait::async_trait;
 
 use crate::models::model::Model;
@@ -8,7 +10,7 @@ pub trait ModelStore<'a, L: ToString + 'a, V: ToString + 'a> {
         &mut self,
         name: &'a str,
         model: &'a Box<dyn Model<L, V> + 'a>
-    ) -> Option<&'a Box<dyn Model<L, V> + 'a>>;
-    async fn get(&self, name: &'a str) -> Option<&&'a Box<dyn Model<L, V> + 'a>>;
-    async fn setup(&self) -> Result<(), &'static str>;
+    ) -> Result<Option<&'a Box<dyn Model<String, V> + 'a>>,  &'static str>;
+    async fn get(&self, name: &'a str) -> Result<Option<&&Box<dyn Model<String, V> + 'a>>,  &'static str>;
+    async fn setup(&self) -> Result<(), Box<dyn Error>>;
 }
