@@ -19,7 +19,7 @@ mod tests {
         ] ).await.unwrap();
 
         let mut model_store: Box< dyn ModelStore< String, String>> = Box::new(HashmapModelStore::<String> { map: HashMap::new()});
-        model_store.add("testing", &model).await;
+        model_store.add("testing", model).await;
         
         let query = ClassifierQuery{
             text: "name1",

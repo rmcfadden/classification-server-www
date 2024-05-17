@@ -4,7 +4,7 @@ mod tests {
  
     #[test]
     fn test_model_factor(){ 
-        let model = ModelFactory::create("default")
+        let model = ModelFactory::create::<String>("default")
             .unwrap();
         assert_eq!("HashmapModel", model.get_name());
     } 

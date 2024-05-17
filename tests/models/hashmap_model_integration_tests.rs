@@ -8,7 +8,7 @@ mod tests {
     async fn test_hashmap_model(){ 
         let mut model = HashmapModel::<String, String>{..Default::default()};
 
-        // TOOD: return value for trainging
+        // TOOD: return value for training
         let _train_result = model.train(vec![
             Label {name: "name1".to_string(), value:"value".to_string()},
             Label {name: "name2".to_string(), value:"value2".to_string()},
