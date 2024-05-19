@@ -4,3 +4,4 @@ pub mod model_factory;
 pub mod model_store;
 pub mod hashmap_model_store;
 pub mod sqlite_model_store;
+pub mod perceptron_neural_model;
