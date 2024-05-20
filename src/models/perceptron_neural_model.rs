@@ -1,40 +1,50 @@
-use crate::{classifiers::classifier_response::ClassifierResponse, core::{label::Label, serialize::Serialize}};
+
+use async_trait::async_trait;
+use std::hash::Hash;
+
+use crate::math::perceptron_layer::PerceptronLayer;
+use crate::{classifiers::classifier_response::ClassifierResponse, core::{label::Label, serialize::Serialize}, };
 
 use super::model::Model;
 
 pub struct PerceptronNeuralModel<L: ToString + Into<L>, V: ToString + Into<V>> {
-    layers: vec![PerceptronLayer<f64>]
+    labels: Vec<Label<L,V>>,
+    layers: Vec<PerceptronLayer::<f64>>
 }
 
 #[async_trait(?Send)]
 impl<'a,L: ToString + Eq + Hash + Clone + Into<L> + From<String>, V: ToString + Into<V> + From<String> + Clone> Model<L,V> for PerceptronNeuralModel<L,V> {
     fn get_name(&self) -> String { "perceptron_neural_model".to_string()}
     
-    async fn train(&mut self, labels: Vec<Label<L,V>>) -> Result<(), &'static str> {
+    async fn train(&mut self, _labels: Vec<Label<L,V>>) -> Result<(), &'static str> {
         //self.map = labels.iter()
         //    .map(|l| (l.name.clone(), Box::new(l.value.clone())))
         //    .collect();
         Ok(())
     }
 
-    async fn predict(&self, feature: L) -> Result<ClassifierResponse<L,V>, &'static str> {
+    async fn predict(&self, _feature: L) -> Result<ClassifierResponse<L,V>, &'static str> {
         //let item = self.map.get(&feature);
         //let predictions = match item  {
          //   Some(l) => vec![ LabelPrediction { label: Label { name: feature.to_owned(), value: *l.to_owned() }, percent: 100.0 }],
          //   None  => vec![]
         //};
-        //Ok( ClassifierResponse { predictions })
+        Ok( ClassifierResponse { predictions: vec![] })
     }
 }
 
 impl<L: ToString,V: ToString> Default for PerceptronNeuralModel<L,V> {
     fn default() -> Self {
-        Self { layers: [] }
+        Self {
+            labels: vec![], 
+            layers: vec![], 
+        }
     }
 }
 
 impl<L: ToString + Into<L> + From<String> + Eq,V: ToString + Into<V> + From<String>> Serialize<String> for PerceptronNeuralModel<L,V> {
     fn serialize(&self) -> String {
+        return "".to_string()
 /*
         let map: HashMap<String,String> = self.map
         .iter()

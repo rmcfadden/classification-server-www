@@ -16,6 +16,7 @@ pub mod classifiers;
 pub mod models;
 pub mod core;
 pub mod data_access;
+pub mod math;
 
 
 #[async_std::main]
@@ -31,10 +32,8 @@ async fn main() {
 }
 
 async fn handle_connection(mut stream: TcpStream ) -> io::Result<()> {
-
     let reader = BufReader::new(&stream);
-    let mut lines = reader.lines();
-    
+    let mut lines = reader.lines();    
     let mut contents: Vec<String> = Vec::new();
     while let Some(line) = lines.next().await {
         let line = line?;
