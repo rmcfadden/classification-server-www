@@ -7,13 +7,13 @@ use crate::{classifiers::classifier_response::ClassifierResponse, core::{label::
 
 use super::model::Model;
 
-pub struct PerceptronNeuralModel<L: ToString + Into<L>, V: ToString + Into<V>> {
+pub struct PerceptronNeuralModel<'a,L: ToString + Into<L>, V: ToString + Into<V>> {
     labels: Vec<Label<L,V>>,
-    layers: Vec<PerceptronLayer::<f64>>
+    layers: Vec<PerceptronLayer::<'a,f64>>
 }
 
 #[async_trait(?Send)]
-impl<'a,L: ToString + Eq + Hash + Clone + Into<L> + From<String>, V: ToString + Into<V> + From<String> + Clone> Model<L,V> for PerceptronNeuralModel<L,V> {
+impl<'a,L: ToString + Eq + Hash + Clone + Into<L> + From<String>, V: ToString + Into<V> + From<String> + Clone> Model<L,V> for PerceptronNeuralModel<'a,L,V> {
     fn get_name(&self) -> String { "perceptron_neural_model".to_string()}
     
     async fn train(&mut self, _labels: Vec<Label<L,V>>) -> Result<(), &'static str> {
@@ -33,7 +33,7 @@ impl<'a,L: ToString + Eq + Hash + Clone + Into<L> + From<String>, V: ToString + 
     }
 }
 
-impl<L: ToString,V: ToString> Default for PerceptronNeuralModel<L,V> {
+impl<'a,L: ToString,V: ToString> Default for PerceptronNeuralModel<'a,L,V> {
     fn default() -> Self {
         Self {
             labels: vec![], 
@@ -42,7 +42,7 @@ impl<L: ToString,V: ToString> Default for PerceptronNeuralModel<L,V> {
     }
 }
 
-impl<L: ToString + Into<L> + From<String> + Eq,V: ToString + Into<V> + From<String>> Serialize<String> for PerceptronNeuralModel<L,V> {
+impl<'a,L: ToString + Into<L> + From<String> + Eq,V: ToString + Into<V> + From<String>> Serialize<String> for PerceptronNeuralModel<'a,L,V> {
     fn serialize(&self) -> String {
         return "".to_string()
 /*

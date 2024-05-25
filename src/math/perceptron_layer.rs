@@ -2,20 +2,23 @@ use num::Zero;
 
 use super::matrix::Matrix;
 
-pub struct PerceptronLayer<T> 
-where T: Zero + ToString + Copy {
-    weights: Matrix<T>,
-    biases: Matrix<T>,
+pub struct PerceptronLayer<'a,T> where T: Zero + ToString + Copy {
+    weights: &'a Matrix<T>,
+    biases: &'a Matrix<T>,
     activation: String
 } 
 
-impl<T> PerceptronLayer<T> 
-where T: Zero + ToString + Copy {
-    pub fn new (l: usize) -> Self {
+impl<'a,T> PerceptronLayer<'a,T> where T: Zero + ToString + Copy {
+    pub fn new (weights: &'a Matrix<T>,biases: &'a Matrix<T>) -> Self {
         Self { 
-            weights: Matrix::<T>::new(1,l),
-            biases: Matrix::<T>::new(1,l),
+            weights: weights,
+            biases: biases,
             activation: "tanh".to_string()
         }
     }
+
+    pub fn forward(self, rhs: Matrix<T>) -> Matrix::<T>  {
+        Matrix::<T>::new(1, self.weights.len())
+    }
+
 }
