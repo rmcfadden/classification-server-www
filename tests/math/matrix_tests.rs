@@ -26,7 +26,6 @@ mod tests {
         m2[2][2] = 1.1;
 
         let m3 = m1 + m2;
-
         assert_eq!(2.2, m3[0][0]);
         assert_eq!(2.2, m3[1][1]);
         assert_eq!(2.2, m3[2][2]); 

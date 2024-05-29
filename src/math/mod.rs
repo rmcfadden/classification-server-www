@@ -1,2 +1,9 @@
 pub mod matrix;
 pub mod perceptron_layer;
+pub mod identity_activation_function;
+pub mod activation_function;    
+pub mod activation_function_factory;
+pub mod sigmoid_activation_function;
+pub mod normalizer_function;
+pub mod normalizer_function_factory;
+pub mod mean_standard_deviation_normalizer_function;

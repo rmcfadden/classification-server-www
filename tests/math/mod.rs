@@ -1,2 +1,3 @@
 pub mod matrix_tests;
 pub mod perceptron_layer_tests;
+pub mod mean_standard_deviation_normalizer_function_tests;
