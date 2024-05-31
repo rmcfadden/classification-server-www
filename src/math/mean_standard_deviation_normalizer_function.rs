@@ -27,12 +27,6 @@ impl<T: Float + AddAssign + DivAssign + Display> NormalizerFunction<T>
         variance /= T::from(len).unwrap();
 
         let standard_deviation = T::sqrt(variance);
-
-        println!("sum: {sum}");
-        println!("variance: {variance}");
-        println!("mean: {mean}");
-        println!("standard_deviation: {standard_deviation}");
-
         inputs
             .iter()
             .map(|i| (*i - mean) / standard_deviation)
