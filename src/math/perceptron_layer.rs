@@ -17,11 +17,11 @@ impl<'a, T> PerceptronLayer<'a, T>
 where
     T: Zero + ToString + Copy + Mul<Output = T> + AddAssign + Float,
 {
-    pub fn new(weights: &'a Vec<T>, biases: &'a Vec<T>) -> Self {
+    pub fn new(weights: &'a Vec<T>, biases: &'a Vec<T>, activation: String) -> Self {
         Self {
             weights,
             biases,
-            activation: "default".to_string(),
+            activation,
         }
     }
 
