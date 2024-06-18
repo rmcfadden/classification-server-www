@@ -1,9 +1,16 @@
+use std::fmt::Display;
+
+use crate::{
+    classifiers::classifier_response::ClassifierResponse,
+    core::{input_vector::InputVector, serialize::Serialize},
+};
 use async_trait::async_trait;
-use crate::{classifiers::classifier_response::ClassifierResponse, core::{label::Label, serialize::Serialize}};
+
+use super::training_result::TrainingResult;
 
 #[async_trait(?Send)]
-pub trait Model<L: ToString, V: ToString> : Serialize<String> {
+pub trait Model<L: ToString, V: ToString + Display>: Serialize<String> {
     fn get_name(&self) -> String;
-    async fn train(&mut self, labels: Vec<Label<L,V>>) -> Result<(), &'static str>;
-    async fn predict(&self, value: L) -> Result<ClassifierResponse<L,V>, &'static str>;
+    async fn train(&mut self, inputs: &InputVector) -> Result<TrainingResult, &'static str>;
+    async fn predict(&self, value: L) -> Result<ClassifierResponse<L, V>, &'static str>;
 }

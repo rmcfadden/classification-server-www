@@ -5,6 +5,5 @@ pub mod matrix;
 pub mod mean_standard_deviation_normalizer_function;
 pub mod normalizer_function;
 pub mod normalizer_function_factory;
-pub mod perceptron_layer;
 pub mod sigmoid_activation_function;
 pub mod tanh_activation_function;

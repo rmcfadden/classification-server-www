@@ -1,8 +1,8 @@
 use crate::core::label::Label;
 
-#[derive(Debug)]
-pub struct LabelPrediction <L: ToString, V: ToString> {
-    pub label: Label<L,V>,
+#[derive(Debug, Clone)]
+pub struct LabelPrediction<L: ToString, V: ToString> {
+    pub label: Label<L, V>,
     pub percent: f64,
 }
 
@@ -11,13 +11,12 @@ mod tests {
     use super::*;
     #[test]
     fn test_create_label_prediction_get_label_value() {
-        let prediction = LabelPrediction 
-        {
+        let prediction = LabelPrediction {
             label: Label {
-                name: String::from("name1AA"), 
-                value: String::from("value1BB")
+                name: String::from("name1AA"),
+                value: String::from("value1BB"),
             },
-            percent: 23.11231
+            percent: 23.11231,
         };
         let label = prediction.label;
         assert_eq!(label.name, String::from("name1AA"));

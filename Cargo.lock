@@ -296,6 +296,7 @@ dependencies = [
  "futures",
  "http",
  "num",
+ "rand",
  "serde_json",
  "sqlx",
  "url",

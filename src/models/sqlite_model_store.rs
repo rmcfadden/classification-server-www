@@ -1,11 +1,14 @@
-use std::{error::Error};
+use std::{error::Error, fmt::Display};
 
 use async_trait::async_trait;
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 
-use crate::{data_access::model::Model as ModelDataAccess, models::model_factory::ModelFactory};
+use crate::{
+    core::input_type::InputType, data_access::model::Model as ModelDataAccess,
+    models::model_factory::ModelFactory,
+};
 
-use super::{ model::Model, model_store::ModelStore };
+use super::{model::Model, model_store::ModelStore};
 
 pub struct SqliteModelStore<'a, V> {
     pub url: &'a str,
@@ -13,13 +16,15 @@ pub struct SqliteModelStore<'a, V> {
 }
 
 #[async_trait(?Send)]
-impl<'a, V: ToString + Clone + From<String> + 'a> ModelStore<'a, String, V> for SqliteModelStore<'a, V> {
+impl<'a, V: ToString + Clone + From<String> + Display + From<InputType> + 'a>
+    ModelStore<'a, String, V> for SqliteModelStore<'a, V>
+{
     async fn add(
         &mut self,
         name: &'a str,
-        model: Box<dyn Model<String, V> + 'a>
-    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>,  &'static str> {
-        let model_text = model.serialize();        
+        model: Box<dyn Model<String, V> + 'a>,
+    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, &'static str> {
+        let model_text = model.serialize();
         let db = SqlitePool::connect(&self.url).await.unwrap();
         let _result = sqlx::query("insert into models (name, model_type, text) VALUES (?,?,?)")
             .bind(name)
@@ -27,19 +32,23 @@ impl<'a, V: ToString + Clone + From<String> + 'a> ModelStore<'a, String, V> for 
             .bind(model_text)
             .execute(&db)
             .await
-            .unwrap();  // TODO: Handle this error
+            .unwrap(); // TODO: Handle this error
         Ok(Some(model))
     }
 
-    async fn get(&self, name: &'a str) -> Result<Option<Box<dyn Model<String, V> + 'a>>,  &'static str> {
+    async fn get(
+        &self,
+        name: &'a str,
+    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, &'static str> {
         let db = SqlitePool::connect(&self.url).await.unwrap();
 
-        let model = sqlx::query_as::<_, ModelDataAccess>( 
-            "select id,name,model_type,text from models where name = ?"
+        let model = sqlx::query_as::<_, ModelDataAccess>(
+            "select id,name,model_type,text from models where name = ?",
         )
         .bind(name)
         .fetch_one(&db)
-        .await.unwrap();
+        .await
+        .unwrap();
 
         let mut new_model = ModelFactory::create::<V>(model.model_type.as_str()).unwrap();
         new_model.deserialize(model.text);
@@ -50,7 +59,7 @@ impl<'a, V: ToString + Clone + From<String> + 'a> ModelStore<'a, String, V> for 
         if !Sqlite::database_exists(&self.url).await.unwrap_or(false) {
             println!("Creating database {}", &self.url);
             Sqlite::create_database(&self.url).await?;
-        } else {            
+        } else {
             println!("Database already exists");
         }
 

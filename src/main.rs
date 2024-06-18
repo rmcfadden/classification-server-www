@@ -1,23 +1,23 @@
-use std::io;
+use crate::http_request::HttpRequest;
+use crate::router::Router;
 use async_std::io::BufReader;
 use async_std::io::WriteExt;
 use async_std::net::TcpListener;
 use async_std::net::TcpStream;
-use futures::stream::StreamExt;
 use async_std::task::spawn;
+use futures::stream::StreamExt;
 use futures::AsyncBufReadExt;
-use crate::http_request::HttpRequest;
-use crate::router::Router;
+use std::io;
 
-pub mod http_request;
-pub mod http_response;
-pub mod router;
 pub mod classifiers;
-pub mod models;
 pub mod core;
 pub mod data_access;
+pub mod http_request;
+pub mod http_response;
 pub mod math;
-
+pub mod models;
+pub mod neural;
+pub mod router;
 
 #[async_std::main]
 async fn main() {
@@ -28,12 +28,12 @@ async fn main() {
             let stream = stream.unwrap();
             spawn(handle_connection(stream));
         })
-    .await;
+        .await;
 }
 
-async fn handle_connection(mut stream: TcpStream ) -> io::Result<()> {
+async fn handle_connection(mut stream: TcpStream) -> io::Result<()> {
     let reader = BufReader::new(&stream);
-    let mut lines = reader.lines();    
+    let mut lines = reader.lines();
     let mut contents: Vec<String> = Vec::new();
     while let Some(line) = lines.next().await {
         let line = line?;
@@ -46,9 +46,8 @@ async fn handle_connection(mut stream: TcpStream ) -> io::Result<()> {
     let status_line = "HTTP/1.1 200 OK";
     let response_text = "hello world!";
     let content_length = response_text.len();
-    let response = format!(
-        "{status_line}\r\nContent-Length:{content_length}\r\n\r\n{response_text}"
-    );
+    let response =
+        format!("{status_line}\r\nContent-Length:{content_length}\r\n\r\n{response_text}");
     stream.write_all(response.as_bytes()).await.unwrap();
     Ok(())
 }
