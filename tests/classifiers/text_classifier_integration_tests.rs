@@ -17,19 +17,27 @@ mod tests {
     async fn test_classifier() {
         let mut model: Box<dyn Model<String, String>> = Box::new(HashmapModel::<String>::default());
 
+        let targets = vec![
+            Label {
+                name: "name1".to_string(),
+                value: "".to_string(),
+            },
+            Label {
+                name: "name2".to_string(),
+                value: "".to_string(),
+            },
+        ];
+
         let _train_result = model
-            .train(&InputVector {
-                items: vec![
-                    vec![
-                        InputType::Text("name1".to_string()),
-                        InputType::Text("value".to_string()),
+            .train(
+                &InputVector {
+                    items: vec![
+                        vec![InputType::Text("value".to_string())],
+                        vec![InputType::Text("value2".to_string())],
                     ],
-                    vec![
-                        InputType::Text("name2".to_string()),
-                        InputType::Text("value2".to_string()),
-                    ],
-                ],
-            })
+                },
+                &targets,
+            )
             .await
             .unwrap();
         let mut model_store: Box<dyn ModelStore<String, String>> =

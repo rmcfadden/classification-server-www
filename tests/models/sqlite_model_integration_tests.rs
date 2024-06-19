@@ -2,6 +2,7 @@
 mod tests {
     use classification_server_www::core::input_type::InputType;
     use classification_server_www::core::input_vector::InputVector;
+    use classification_server_www::core::label::Label;
     use classification_server_www::models::hashmap_model::HashmapModel;
     use classification_server_www::models::model::Model;
     use classification_server_www::models::model_store::ModelStore;
@@ -18,19 +19,27 @@ mod tests {
 
         let mut model: Box<dyn Model<String, String>> = Box::new(HashmapModel::<String>::default());
 
+        let targets = vec![
+            Label {
+                name: "name1".to_string(),
+                value: "".to_string(),
+            },
+            Label {
+                name: "name2".to_string(),
+                value: "".to_string(),
+            },
+        ];
+
         let _train_result = model
-            .train(&InputVector {
-                items: vec![
-                    vec![
-                        InputType::Text("name1".to_string()),
-                        InputType::Text("value".to_string()),
+            .train(
+                &InputVector {
+                    items: vec![
+                        vec![InputType::Text("value".to_string())],
+                        vec![InputType::Text("asdfasdf".to_string())],
                     ],
-                    vec![
-                        InputType::Text("name2".to_string()),
-                        InputType::Text("asdfasdf".to_string()),
-                    ],
-                ],
-            })
+                },
+                &targets,
+            )
             .await
             .unwrap();
 

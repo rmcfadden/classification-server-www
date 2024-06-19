@@ -9,19 +9,27 @@ mod tests {
     async fn test_hashmap_model() {
         let mut model = HashmapModel::<String>::default();
 
+        let targets = vec![
+            Label {
+                name: "name1".to_string(),
+                value: "".to_string(),
+            },
+            Label {
+                name: "name2".to_string(),
+                value: "".to_string(),
+            },
+        ];
+
         let _train_result = model
-            .train(&InputVector {
-                items: vec![
-                    vec![
-                        InputType::Text("name1".to_string()),
-                        InputType::Text("value".to_string()),
+            .train(
+                &InputVector {
+                    items: vec![
+                        vec![InputType::Text("value".to_string())],
+                        vec![InputType::Text("asdfasdf".to_string())],
                     ],
-                    vec![
-                        InputType::Text("name2".to_string()),
-                        InputType::Text("asdfasdf".to_string()),
-                    ],
-                ],
-            })
+                },
+                &targets,
+            )
             .await
             .unwrap();
         let result = model.predict("name1".to_string()).await.unwrap();

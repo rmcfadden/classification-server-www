@@ -36,7 +36,11 @@ impl<
         "perceptron_neural_model".to_string()
     }
 
-    async fn train(&mut self, inputs: &InputVector) -> Result<TrainingResult, &'static str> {
+    async fn train(
+        &mut self,
+        inputs: &InputVector,
+        targets: &Vec<Label<L, V>>,
+    ) -> Result<TrainingResult, &'static str> {
         //self.map = labels.iter()
         //    .map(|l| (l.name.clone(), Box::new(l.value.clone())))
         //    .collect();

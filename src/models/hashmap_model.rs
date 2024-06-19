@@ -24,11 +24,15 @@ impl<'a, V: ToString + Into<V> + From<String> + From<InputType> + Display + Clon
         "hashmap_model".to_string()
     }
 
-    async fn train(&mut self, inputs: &InputVector) -> Result<TrainingResult, &'static str> {
-        self.map = inputs
-            .items
-            .iter()
-            .map(|v| (v[0].clone().into(), v[1].clone().into()))
+    async fn train(
+        &mut self,
+        inputs: &InputVector,
+        targets: &Vec<Label<String, V>>,
+    ) -> Result<TrainingResult, &'static str> {
+        self.map = <Vec<Vec<InputType>> as Clone>::clone(&inputs.items)
+            .into_iter()
+            .enumerate()
+            .map(|(i, v)| (targets[i].name.clone(), v[0].clone().into()))
             .collect();
         Ok(TrainingResult {
             id: "".to_string(),

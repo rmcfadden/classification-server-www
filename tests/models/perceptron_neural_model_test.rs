@@ -1,3 +1,4 @@
+use classification_server_www::core::input_vector::InputVector;
 use classification_server_www::models::model::Model;
 use classification_server_www::{
     core::{feature_description::FeatureDescription, label::Label},
@@ -7,21 +8,23 @@ use classification_server_www::{
 
 #[async_std::test]
 async fn test_categorical_perceptron_neural_model() {
+    let categories = vec![
+        FeatureDescription {
+            name: "age".to_string(),
+            data_type: "f64".to_string(),
+        },
+        FeatureDescription {
+            name: "height".to_string(),
+            data_type: "f64".to_string(),
+        },
+        FeatureDescription {
+            name: "nationality".to_string(),
+            data_type: "text".to_string(),
+        },
+    ];
+
     let inputs = CategoricalInputLayer {
-        categories: vec![
-            FeatureDescription {
-                name: "age".to_string(),
-                data_type: "f64".to_string(),
-            },
-            FeatureDescription {
-                name: "height".to_string(),
-                data_type: "f64".to_string(),
-            },
-            FeatureDescription {
-                name: "nationality".to_string(),
-                data_type: "text".to_string(),
-            },
-        ],
+        categories: &categories,
     };
 
     let layers = vec![PerceptronLayer::<f64>::new_with_random(
@@ -36,7 +39,27 @@ async fn test_categorical_perceptron_neural_model() {
     let mut model = PerceptronNeuralModel::<String, f64>::new(&inputs, &layers, &outputs);
     let name = model.get_name();
 
-    // model.train()
+    let input_vector = InputVector::create(
+        &categories,
+        &vec![
+            vec!["44.1".to_string(), "185.5".to_string(), "usa".to_string()],
+            vec!["26.1".to_string(), "165.5".to_string(), "fiji".to_string()],
+        ],
+    )
+    .unwrap();
+
+    let targets = vec![
+        Label {
+            name: "gender".to_string(),
+            value: 1.0,
+        },
+        Label {
+            name: "gender".to_string(),
+            value: 0.0,
+        },
+    ];
+
+    let _train_result = model.train(&input_vector, &targets).await.unwrap();
 
     assert_eq!("perceptron_neural_model", name);
 }
