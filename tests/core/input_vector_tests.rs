@@ -29,7 +29,8 @@ mod tests {
             vec!["24.5".to_string(), "165.55".to_string(), "usa".to_string()],
         ];
 
-        let vector = InputVector::create(&categories, &inputs).unwrap();
+        let data_types = categories.iter().map(|c| c.data_type.clone()).collect();
+        let vector = InputVector::create_categorical::<String>(&data_types, &inputs).unwrap();
         assert_eq!(InputType::Float64(16.5), vector.items[0][0]);
         assert_eq!(InputType::Float64(140.101), vector.items[0][1]);
         assert_eq!(InputType::Text("fiji".to_string()), vector.items[0][2]);
@@ -51,7 +52,9 @@ mod tests {
             },
         ];
         let inputs = vec![vec!["TESTS".to_string(), "140.101".to_string()]];
-        let vector_result = match InputVector::create(&categories, &inputs) {
+        let data_types = categories.iter().map(|c| c.data_type.clone()).collect();
+
+        let vector_result = match InputVector::create_categorical(&data_types, &inputs) {
             Err(e) => e,
             Ok(_) => "success".to_string(),
         };
@@ -70,8 +73,9 @@ mod tests {
                 data_type: "f64".to_string(),
             },
         ];
+        let data_types = categories.iter().map(|c| c.data_type.clone()).collect();
         let inputs = vec![vec!["12.1".to_string(), "140.101".to_string()]];
-        let vector_result = match InputVector::create(&categories, &inputs) {
+        let vector_result = match InputVector::create_categorical(&data_types, &inputs) {
             Err(e) => e,
             Ok(_) => "success".to_string(),
         };
@@ -84,8 +88,9 @@ mod tests {
             name: "age".to_string(),
             data_type: "f64".to_string(),
         }];
+        let data_types = categories.iter().map(|c| c.data_type.clone()).collect();
         let inputs = vec![vec!["TESTS".to_string(), "140.101".to_string()]];
-        let vector_result = match InputVector::create(&categories, &inputs) {
+        let vector_result = match InputVector::create_categorical(&data_types, &inputs) {
             Err(e) => e,
             Ok(_) => "success".to_string(),
         };

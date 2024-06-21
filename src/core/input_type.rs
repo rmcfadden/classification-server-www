@@ -3,6 +3,9 @@ use std::fmt::Display;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum InputType {
+    Int8(i8),
+    UInt8(u8),
+    Int16(i16),
     Int32(i32),
     Int64(i32),
     Float64(f64),
@@ -37,6 +40,28 @@ impl InputType {
                 };
                 Ok(InputType::Float64(parsed))
             }
+            "i8" => {
+                let parsed = match input.parse::<i8>() {
+                    Ok(i) => i,
+                    Err(_) => return Err(format!("Could not parse {input} into i8")),
+                };
+                Ok(InputType::Int8(parsed))
+            }
+            "u8" => {
+                let parsed = match input.parse::<u8>() {
+                    Ok(i) => i,
+                    Err(_) => return Err(format!("Could not parse {input} into u8")),
+                };
+                Ok(InputType::UInt8(parsed))
+            }
+
+            "i16" => {
+                let parsed = match input.parse::<i16>() {
+                    Ok(i) => i,
+                    Err(_) => return Err(format!("Could not parse {input} into i16")),
+                };
+                Ok(InputType::Int16(parsed))
+            }
             "i32" => {
                 let parsed = match input.parse::<i32>() {
                     Ok(i) => i,
@@ -44,7 +69,6 @@ impl InputType {
                 };
                 Ok(InputType::Int32(parsed))
             }
-
             _ => Err("".to_string()),
         }
     }
