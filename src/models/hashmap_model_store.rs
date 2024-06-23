@@ -17,7 +17,7 @@ impl<'a, V: ToString + Clone + From<String> + From<InputType> + Display + 'a>
         &mut self,
         name: &'a str,
         model: Box<dyn Model<String, V> + 'a>,
-    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, &'static str> {
+    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, Box<dyn Error>> {
         let new_model = self.map.insert(name, model);
         Ok(new_model)
     }
@@ -25,10 +25,13 @@ impl<'a, V: ToString + Clone + From<String> + From<InputType> + Display + 'a>
     async fn get(
         &self,
         name: &'a str,
-    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, &'static str> {
-        let new_model = self.map.get(&name).unwrap();
+    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, Box<dyn Error>> {
+        let new_model = self
+            .map
+            .get(&name)
+            .ok_or("Could not find {name} in the model store")?;
         let text_model = new_model.serialize();
-        let mut new_model = ModelFactory::create::<V>(new_model.get_name().as_str()).unwrap();
+        let mut new_model = ModelFactory::create::<V>(new_model.get_name().as_str())?;
         new_model.deserialize(text_model);
         Ok(Some(new_model))
     }

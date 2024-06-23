@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fmt::Display;
 
 use crate::{
@@ -15,6 +16,6 @@ pub trait Model<L: ToString, V: ToString + Display>: Serialize<String> {
         &mut self,
         inputs: &InputVector,
         targets: &Vec<Label<L, V>>,
-    ) -> Result<TrainingResult, &'static str>;
-    async fn predict(&self, value: L) -> Result<ClassifierResponse<L, V>, &'static str>;
+    ) -> Result<TrainingResult, Box<dyn Error>>;
+    async fn predict(&self, value: L) -> Result<ClassifierResponse<L, V>, Box<dyn Error>>;
 }

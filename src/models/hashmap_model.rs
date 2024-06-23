@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use std::collections::HashMap;
+use std::error::Error;
 use std::fmt::Display;
 
 use crate::classifiers::classifier_response::ClassifierResponse;
@@ -28,7 +29,7 @@ impl<'a, V: ToString + Into<V> + From<String> + From<InputType> + Display + Clon
         &mut self,
         inputs: &InputVector,
         targets: &Vec<Label<String, V>>,
-    ) -> Result<TrainingResult, &'static str> {
+    ) -> Result<TrainingResult, Box<dyn Error>> {
         self.map = <Vec<Vec<InputType>> as Clone>::clone(&inputs.items)
             .into_iter()
             .enumerate()
@@ -43,7 +44,7 @@ impl<'a, V: ToString + Into<V> + From<String> + From<InputType> + Display + Clon
     async fn predict(
         &self,
         feature: String,
-    ) -> Result<ClassifierResponse<String, V>, &'static str> {
+    ) -> Result<ClassifierResponse<String, V>, Box<dyn Error>> {
         let item = self.map.get(&feature);
         let predictions = match item {
             Some(l) => vec![LabelPrediction {

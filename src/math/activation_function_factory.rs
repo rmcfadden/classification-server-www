@@ -1,4 +1,4 @@
-use std::ops::AddAssign;
+use std::{error::Error, ops::AddAssign};
 
 use num::Float;
 
@@ -13,12 +13,12 @@ pub struct ActivationFunctionFactory;
 impl ActivationFunctionFactory {
     pub fn create<T: Float + AddAssign>(
         name: &str,
-    ) -> Result<Box<dyn ActivationFunction<T>>, &'static str> {
+    ) -> Result<Box<dyn ActivationFunction<T>>, Box<dyn Error>> {
         match name.to_lowercase().as_str() {
             "default" | "sigmoid" => Ok(Box::new(SigmoidActivationFunction {})),
             "tanh" => Ok(Box::new(TanhActivationFunction {})),
             "identity" => Ok(Box::new(IdentityActivationFunction {})),
-            _ => Err("cannot find activation function {name}"),
+            _ => Err("cannot find activation function {name}".into()),
         }
     }
 }

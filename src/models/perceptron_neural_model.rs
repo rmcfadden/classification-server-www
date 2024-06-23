@@ -1,10 +1,13 @@
 use async_trait::async_trait;
 use num::Float;
+use std::error::Error;
 use std::fmt::Display;
 use std::hash::Hash;
 use std::ops::AddAssign;
+use std::time::Instant;
 
 use crate::core::input_vector::InputVector;
+use crate::math::normalizer_function_factory::NormalizerFunctionFactory;
 use crate::models::model::Model;
 use crate::neural::input_layer::InputLayer;
 use crate::neural::perceptron_layer::PerceptronLayer;
@@ -40,17 +43,39 @@ impl<
         &mut self,
         inputs: &InputVector,
         targets: &Vec<Label<L, V>>,
-    ) -> Result<TrainingResult, &'static str> {
-        //self.map = labels.iter()
-        //    .map(|l| (l.name.clone(), Box::new(l.value.clone())))
-        //    .collect();
+    ) -> Result<TrainingResult, Box<dyn Error>> {
+        if inputs.items.len() == 0 {
+            return Err("inputs length cannot be 0".into());
+        }
+        if targets.len() == 0 {
+            return Err("targets length cannot be 0".into());
+        }
+
+        let before = Instant::now();
+
+        // TODO: preprocessing
+        // 1. vectorize strings
+        let mut processed_items: Vec<Vec<f64>> = vec![vec![]];
+        for items in inputs.items.iter() {
+            let mut processed_item: Vec<f64> = vec![];
+            for item in items.iter() {
+                processed_item.push((*item).clone().try_into()?);
+            }
+            processed_items.push(processed_item);
+        }
+
+        let normalizer = NormalizerFunctionFactory::create::<f64>("default")?;
+        for item in inputs.items.iter() {
+            //*normalizer.apply()
+        }
+
         Ok(TrainingResult {
             id: "".to_string(),
-            elapsed: 0,
+            elapsed: before.elapsed().as_micros(),
         })
     }
 
-    async fn predict(&self, feature: L) -> Result<ClassifierResponse<L, V>, &'static str> {
+    async fn predict(&self, feature: L) -> Result<ClassifierResponse<L, V>, Box<dyn Error>> {
         //let item = self.map.get(&feature);
         //let predictions = match item  {
         //   Some(l) => vec![ LabelPrediction { label: Label { name: feature.to_owned(), value: *l.to_owned() }, percent: 100.0 }],

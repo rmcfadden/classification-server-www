@@ -56,9 +56,12 @@ mod tests {
 
         let vector_result = match InputVector::create_categorical(&data_types, &inputs) {
             Err(e) => e,
-            Ok(_) => "success".to_string(),
+            Ok(_) => "success".into(),
         };
-        assert_eq!("Could not parse TESTS into f64".to_string(), vector_result);
+        assert_eq!(
+            "Could not parse TESTS into f64".to_string(),
+            vector_result.to_string()
+        );
     }
 
     #[test]
@@ -77,9 +80,12 @@ mod tests {
         let inputs = vec![vec!["12.1".to_string(), "140.101".to_string()]];
         let vector_result = match InputVector::create_categorical(&data_types, &inputs) {
             Err(e) => e,
-            Ok(_) => "success".to_string(),
+            Ok(_) => "success".into(),
         };
-        assert_eq!("Could not parse 12.1 into i32".to_string(), vector_result);
+        assert_eq!(
+            "Could not parse 12.1 into i32".to_string(),
+            vector_result.to_string()
+        );
     }
 
     #[test]
@@ -92,11 +98,11 @@ mod tests {
         let inputs = vec![vec!["TESTS".to_string(), "140.101".to_string()]];
         let vector_result = match InputVector::create_categorical(&data_types, &inputs) {
             Err(e) => e,
-            Ok(_) => "success".to_string(),
+            Ok(_) => "success".into(),
         };
         assert_eq!(
-            "inputs lengths does not match categories lengths".to_string(),
-            vector_result
+            "inputs lengths does not match categories lengths",
+            vector_result.to_string()
         );
     }
 }

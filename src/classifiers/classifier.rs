@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fmt::Display;
 
 use crate::classifiers::classifier_query::ClassifierQuery;
@@ -9,5 +10,5 @@ pub trait Classifier<'a, L: ToString, V: ToString + Display> {
     async fn classify(
         &self,
         query: &ClassifierQuery<'a>,
-    ) -> Result<ClassifierResponse<L, V>, String>;
+    ) -> Result<ClassifierResponse<L, V>, Box<dyn Error>>;
 }

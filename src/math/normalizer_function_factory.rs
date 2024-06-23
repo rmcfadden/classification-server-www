@@ -1,5 +1,6 @@
 use std::{
     fmt::Display,
+    io::Error,
     ops::{AddAssign, DivAssign},
 };
 
@@ -13,12 +14,12 @@ pub struct NormalizerFunctionFactory;
 impl NormalizerFunctionFactory {
     pub fn create<T: Float + AddAssign + DivAssign + Display>(
         name: &str,
-    ) -> Result<Box<dyn NormalizerFunction<T>>, &'static str> {
+    ) -> Result<Box<dyn NormalizerFunction<T>>, Error> {
         match name.to_lowercase().as_str() {
             "default" | "mean_standard_deviation" => {
                 Ok(Box::new(MeanStandardDeviationNormalizerFunction))
             }
-            _ => Err("cannot find normalizer function {name}"),
+            _ => Err(Error::other("cannot find normalizer function {name}")),
         }
     }
 }

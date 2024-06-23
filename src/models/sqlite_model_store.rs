@@ -23,34 +23,32 @@ impl<'a, V: ToString + Clone + From<String> + Display + From<InputType> + 'a>
         &mut self,
         name: &'a str,
         model: Box<dyn Model<String, V> + 'a>,
-    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, &'static str> {
+    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, Box<dyn Error>> {
         let model_text = model.serialize();
-        let db = SqlitePool::connect(&self.url).await.unwrap();
+        let db = SqlitePool::connect(&self.url).await?;
         let _result = sqlx::query("insert into models (name, model_type, text) VALUES (?,?,?)")
             .bind(name)
             .bind(model.get_name())
             .bind(model_text)
             .execute(&db)
-            .await
-            .unwrap(); // TODO: Handle this error
+            .await?;
         Ok(Some(model))
     }
 
     async fn get(
         &self,
         name: &'a str,
-    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, &'static str> {
-        let db = SqlitePool::connect(&self.url).await.unwrap();
+    ) -> Result<Option<Box<dyn Model<String, V> + 'a>>, Box<dyn Error>> {
+        let db = SqlitePool::connect(&self.url).await?;
 
         let model = sqlx::query_as::<_, ModelDataAccess>(
             "select id,name,model_type,text from models where name = ?",
         )
         .bind(name)
         .fetch_one(&db)
-        .await
-        .unwrap();
+        .await?;
 
-        let mut new_model = ModelFactory::create::<V>(model.model_type.as_str()).unwrap();
+        let mut new_model = ModelFactory::create::<V>(model.model_type.as_str())?;
         new_model.deserialize(model.text);
         Ok(Some(new_model))
     }

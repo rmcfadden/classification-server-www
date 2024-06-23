@@ -104,8 +104,8 @@ async fn test_mixed_numerical_perceptron_neural_model() {
 
     let mut model = PerceptronNeuralModel::<String, f64>::new(&inputs, &layers, &outputs);
 
-    let input_vector = InputVector::create_categorical::<u8>(
-        &vec!["u8".to_string()],
+    let input_vector = InputVector::create_numerical::<u8>(
+        "u8".to_string(),
         &vec![vec![255, 0, 0], vec![0, 255, 0], vec![0, 0, 255]],
     )
     .unwrap();
