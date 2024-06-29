@@ -1,8 +1,7 @@
+use super::input_layer::InputLayer;
 use crate::core::feature_description::FeatureDescription;
 
-use super::input_layer::InputLayer;
-
-pub struct CategoricalInputLayer<'a> {
-    pub categories: &'a Vec<FeatureDescription>,
+pub struct CategoricalInputLayer<'a, L: ToString> {
+    pub categories: &'a Vec<FeatureDescription<L>>,
 }
-impl<'a> InputLayer for CategoricalInputLayer<'a> {}
+impl<'a, L: ToString> InputLayer for CategoricalInputLayer<'a, L> {}

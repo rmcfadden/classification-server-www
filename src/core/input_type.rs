@@ -1,8 +1,6 @@
 use core::fmt;
 use std::{error::Error, fmt::Display};
 
-use url::form_urlencoded::parse;
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum InputType {
     Int8(i8),

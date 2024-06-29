@@ -12,7 +12,7 @@ use num::Float;
 
 pub struct NormalizerFunctionFactory;
 impl NormalizerFunctionFactory {
-    pub fn create<T: Float + AddAssign + DivAssign + Display>(
+    pub fn create<T: Float + AddAssign + DivAssign + Display + From<u32>>(
         name: &str,
     ) -> Result<Box<dyn NormalizerFunction<T>>, Error> {
         match name.to_lowercase().as_str() {

@@ -1,6 +1,9 @@
 use num::{Float, Zero};
 use rand::Rng;
-use std::ops::{AddAssign, Mul};
+use std::{
+    error::Error,
+    ops::{AddAssign, Mul},
+};
 
 use crate::math::activation_function_factory::ActivationFunctionFactory;
 
@@ -27,7 +30,6 @@ where
 
     pub fn new_with_random(weight_count: usize, activation: String) -> Self {
         let mut rng = rand::thread_rng();
-
         Self {
             weights: (1..weight_count)
                 .into_iter()
@@ -41,12 +43,11 @@ where
         }
     }
 
-    pub fn forward(self, inputs: Vec<T>) -> Vec<T> {
+    pub fn forward(self, inputs: Vec<T>) -> Result<Vec<T>, Box<dyn Error>> {
         let w = self.weights.len();
         let il = inputs.len();
         let mut items = vec![T::zero(); w];
-        let activation_func =
-            ActivationFunctionFactory::create::<T>(self.activation.as_str()).unwrap();
+        let activation_func = ActivationFunctionFactory::create::<T>(self.activation.as_str())?;
         for i in 0..w {
             let mut product = T::zero();
             let weight = self.weights[i];
@@ -56,6 +57,6 @@ where
             }
             items[i] = activation_func.apply((product + bias).into()).into();
         }
-        items
+        Ok(items)
     }
 }

@@ -3,9 +3,11 @@ use num::Float;
 use std::error::Error;
 use std::fmt::Display;
 use std::hash::Hash;
+use std::hash::{DefaultHasher, Hasher};
 use std::ops::AddAssign;
 use std::time::Instant;
 
+use crate::core::input_type::InputType;
 use crate::core::input_vector::InputVector;
 use crate::math::normalizer_function_factory::NormalizerFunctionFactory;
 use crate::models::model::Model;
@@ -53,20 +55,45 @@ impl<
 
         let before = Instant::now();
 
-        // TODO: preprocessing
-        // 1. vectorize strings
-        let mut processed_items: Vec<Vec<f64>> = vec![vec![]];
+        // preprocessing
+        let mut processed_items: Vec<Vec<f64>> = vec![];
         for items in inputs.items.iter() {
-            let mut processed_item: Vec<f64> = vec![];
+            let mut processed_inputs: Vec<f64> = vec![];
             for item in items.iter() {
-                processed_item.push((*item).clone().try_into()?);
+                let is_text = match *item {
+                    InputType::Text(_) => true,
+                    _ => false,
+                };
+                if is_text {
+                    let item_text: String = (*item).clone().into();
+                    let mut hasher = DefaultHasher::new();
+                    item_text.hash(&mut hasher);
+                    let hashed_item = hasher.finish();
+                    processed_inputs.push(hashed_item as f64);
+                } else {
+                    processed_inputs.push((*item).clone().try_into()?);
+                }
             }
-            processed_items.push(processed_item);
+            processed_items.push(processed_inputs);
         }
 
         let normalizer = NormalizerFunctionFactory::create::<f64>("default")?;
-        for item in inputs.items.iter() {
-            //*normalizer.apply()
+        for i in 0..processed_items[0].len() {
+            let mut processed_inputs: Vec<f64> = vec![];
+            for j in 0..processed_items.len() {
+                processed_inputs.push(processed_items[j][i]);
+            }
+            let normalized_inputs = normalizer.apply(&processed_inputs)?;
+            for j in 0..processed_items.len() {
+                processed_items[j][i] = normalized_inputs[j];
+            }
+        }
+        println!("processed_items 2: {:?}", processed_items);
+
+        // Do foward propagation
+
+        for layer in self.layers {
+            //layer.forward(inputs);
         }
 
         Ok(TrainingResult {

@@ -4,8 +4,9 @@ mod tests {
     #[test]
     fn mean_standard_deviation_normalizer_function_test() {
         let normalizer = NormalizerFunctionFactory::create::<f64>("default").unwrap();
-        let normalized_inputs =
-            normalizer.apply(&vec![-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0]);
+        let normalized_inputs = normalizer
+            .apply(&vec![-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0])
+            .unwrap();
         assert_eq!(
             normalized_inputs,
             vec![
@@ -25,7 +26,7 @@ mod tests {
     #[test]
     fn mean_standard_deviation_normalizer_function_again_test() {
         let normalizer = NormalizerFunctionFactory::create::<f64>("default").unwrap();
-        let normalized_inputs = normalizer.apply(&vec![100.0, 200.0, 300.0, 500.0]);
+        let normalized_inputs = normalizer.apply(&vec![100.0, 200.0, 300.0, 500.0]).unwrap();
         assert_eq!(
             normalized_inputs,
             vec![

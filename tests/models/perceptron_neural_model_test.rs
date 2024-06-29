@@ -33,40 +33,41 @@ async fn test_mixed_categorical_perceptron_neural_model() {
         "sigmoid".to_string(),
     )];
     let outputs = vec![Label {
-        name: String::from("gender"),
+        name: "gender",
         value: 0.0,
     }];
 
-    let mut model = PerceptronNeuralModel::<String, f64>::new(&inputs, &layers, &outputs);
+    let mut model = PerceptronNeuralModel::<&str, f64>::new(&inputs, &layers, &outputs);
     let name = model.get_name();
     let data_types = categories.iter().map(|c| c.data_type.clone()).collect();
 
-    let input_vector = InputVector::create_categorical::<String>(
+    let input_vector = InputVector::create_categorical::<&str>(
         &data_types,
         &vec![
-            vec!["44.1".to_string(), "185.5".to_string(), "usa".to_string()],
-            vec!["26.1".to_string(), "165.5".to_string(), "fiji".to_string()],
-            vec![
-                "26.1".to_string(),
-                "165.5".to_string(),
-                "australia".to_string(),
-            ],
+            vec!["44.1", "185.5", "usa"],
+            vec!["26.1", "165.5", "fiji"],
+            vec!["26.1", "165.5", "australia"],
+            vec!["76.1", "122.5", "australia"],
         ],
     )
     .unwrap();
 
     let targets = vec![
         Label {
-            name: "gender".to_string(),
+            name: "gender",
             value: 1.0,
         },
         Label {
-            name: "gender".to_string(),
+            name: "gender",
             value: 0.0,
         },
         Label {
-            name: "gender".to_string(),
+            name: "gender",
             value: 0.0,
+        },
+        Label {
+            name: "gender",
+            value: 1.0,
         },
     ];
 

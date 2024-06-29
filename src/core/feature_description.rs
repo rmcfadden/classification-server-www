@@ -1,6 +1,6 @@
-pub struct FeatureDescription {
-    pub name: String,
-    pub data_type: String,
+pub struct FeatureDescription<L: ToString> {
+    pub name: L,
+    pub data_type: L,
 }
 
 #[cfg(test)]
