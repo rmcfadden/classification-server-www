@@ -1,5 +1,4 @@
 use std::error::Error;
-use std::fmt::Display;
 
 use crate::{
     classifiers::classifier_response::ClassifierResponse,
@@ -10,7 +9,7 @@ use async_trait::async_trait;
 use super::training_result::TrainingResult;
 
 #[async_trait(?Send)]
-pub trait Model<L: ToString, V: ToString + Display>: Serialize<String> {
+pub trait Model<L: ToString, V: ToString>: Serialize<String> {
     fn get_name(&self) -> String;
     async fn train(
         &mut self,

@@ -7,7 +7,7 @@ pub struct InputVector {
 
 impl InputVector {
     pub fn create_categorical<S: ToString>(
-        data_types: &Vec<String>,
+        data_types: &Vec<S>,
         inputs: &Vec<Vec<S>>,
     ) -> Result<InputVector, Box<dyn Error>> {
         let mut new_items: Vec<Vec<InputType>> = vec![];
@@ -17,7 +17,10 @@ impl InputVector {
             }
             let mut new_inputs: Vec<InputType> = vec![];
             for (i, input) in input_items.iter().enumerate() {
-                let input_type = InputType::try_parse(&data_types[i], &input.to_string())?;
+                let input_type = InputType::try_parse(
+                    data_types[i].to_string().as_str(),
+                    input.to_string().as_str(),
+                )?;
                 new_inputs.push(input_type);
             }
             new_items.push(new_inputs);

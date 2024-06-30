@@ -1,5 +1,4 @@
 use std::{
-    fmt::Display,
     io::Error,
     ops::{AddAssign, DivAssign},
 };
@@ -12,7 +11,7 @@ use num::Float;
 
 pub struct NormalizerFunctionFactory;
 impl NormalizerFunctionFactory {
-    pub fn create<T: Float + AddAssign + DivAssign + Display + From<u32>>(
+    pub fn create<T: Float + AddAssign + DivAssign>(
         name: &str,
     ) -> Result<Box<dyn NormalizerFunction<T>>, Error> {
         match name.to_lowercase().as_str() {

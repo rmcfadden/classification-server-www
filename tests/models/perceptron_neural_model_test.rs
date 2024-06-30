@@ -11,16 +11,16 @@ use classification_server_www::{
 async fn test_mixed_categorical_perceptron_neural_model() {
     let categories = vec![
         FeatureDescription {
-            name: "age".to_string(),
-            data_type: "f64".to_string(),
+            name: "age",
+            data_type: "f64",
         },
         FeatureDescription {
-            name: "height".to_string(),
-            data_type: "f64".to_string(),
+            name: "height",
+            data_type: "f64",
         },
         FeatureDescription {
-            name: "nationality".to_string(),
-            data_type: "text".to_string(),
+            name: "nationality",
+            data_type: "text",
         },
     ];
 
@@ -28,10 +28,7 @@ async fn test_mixed_categorical_perceptron_neural_model() {
         categories: &categories,
     };
 
-    let layers = vec![PerceptronLayer::<f64>::new_with_random(
-        2,
-        "sigmoid".to_string(),
-    )];
+    let layers = vec![PerceptronLayer::<f64>::new_with_random(10, "sigmoid".to_string()).unwrap()];
     let outputs = vec![Label {
         name: "gender",
         value: 0.0,
@@ -39,7 +36,7 @@ async fn test_mixed_categorical_perceptron_neural_model() {
 
     let mut model = PerceptronNeuralModel::<&str, f64>::new(&inputs, &layers, &outputs);
     let name = model.get_name();
-    let data_types = categories.iter().map(|c| c.data_type.clone()).collect();
+    let data_types = categories.iter().map(|c| c.data_type).collect();
 
     let input_vector = InputVector::create_categorical::<&str>(
         &data_types,
@@ -83,10 +80,7 @@ async fn test_mixed_numerical_perceptron_neural_model() {
         data_type: "i8".to_string(),
     };
 
-    let layers = vec![PerceptronLayer::<f64>::new_with_random(
-        10,
-        "sigmoid".to_string(),
-    )];
+    let layers = vec![PerceptronLayer::<f32>::new_with_random(10, "sigmoid".to_string()).unwrap()];
 
     let outputs = vec![
         Label {
@@ -103,7 +97,7 @@ async fn test_mixed_numerical_perceptron_neural_model() {
         },
     ];
 
-    let mut model = PerceptronNeuralModel::<String, f64>::new(&inputs, &layers, &outputs);
+    let mut model = PerceptronNeuralModel::<String, f32>::new(&inputs, &layers, &outputs);
 
     let input_vector = InputVector::create_numerical::<u8>(
         "u8".to_string(),

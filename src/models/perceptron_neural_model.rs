@@ -1,10 +1,9 @@
 use async_trait::async_trait;
 use num::Float;
 use std::error::Error;
-use std::fmt::Display;
 use std::hash::Hash;
 use std::hash::{DefaultHasher, Hasher};
-use std::ops::AddAssign;
+use std::ops::{AddAssign, DivAssign};
 use std::time::Instant;
 
 use crate::core::input_type::InputType;
@@ -23,7 +22,7 @@ use super::training_result::TrainingResult;
 pub struct PerceptronNeuralModel<
     'a,
     L: ToString + Eq + Hash + Clone + Into<L>,
-    V: ToString + Into<V> + AddAssign + Float + Clone + From<f64>,
+    V: ToString + Into<V> + AddAssign + Float + Clone + TryFrom<InputType> + AddAssign + DivAssign,
 > {
     pub inputs: &'a dyn InputLayer,
     pub layers: &'a Vec<PerceptronLayer<V>>,
@@ -34,7 +33,7 @@ pub struct PerceptronNeuralModel<
 impl<
         'a,
         L: ToString + Eq + Hash + Clone + Into<L>,
-        V: ToString + Into<V> + AddAssign + Float + Clone + From<f64> + Display,
+        V: ToString + Into<V> + AddAssign + Float + Clone + TryFrom<InputType> + AddAssign + DivAssign,
     > Model<L, V> for PerceptronNeuralModel<'a, L, V>
 {
     fn get_name(&self) -> String {
@@ -56,9 +55,9 @@ impl<
         let before = Instant::now();
 
         // preprocessing
-        let mut processed_items: Vec<Vec<f64>> = vec![];
+        let mut processed_items: Vec<Vec<V>> = vec![];
         for items in inputs.items.iter() {
-            let mut processed_inputs: Vec<f64> = vec![];
+            let mut processed_inputs: Vec<V> = vec![];
             for item in items.iter() {
                 let is_text = match *item {
                     InputType::Text(_) => true,
@@ -68,18 +67,18 @@ impl<
                     let item_text: String = (*item).clone().into();
                     let mut hasher = DefaultHasher::new();
                     item_text.hash(&mut hasher);
-                    let hashed_item = hasher.finish();
-                    processed_inputs.push(hashed_item as f64);
+                    let hashed_item = hasher.finish() as f64;
+                    processed_inputs.push(try_from_v::<V>(InputType::Float64(hashed_item))?);
                 } else {
-                    processed_inputs.push((*item).clone().try_into()?);
+                    processed_inputs.push(try_from_v::<V>((*item).clone())?);
                 }
             }
             processed_items.push(processed_inputs);
         }
 
-        let normalizer = NormalizerFunctionFactory::create::<f64>("default")?;
+        let normalizer = NormalizerFunctionFactory::create::<V>("default")?;
         for i in 0..processed_items[0].len() {
-            let mut processed_inputs: Vec<f64> = vec![];
+            let mut processed_inputs: Vec<V> = vec![];
             for j in 0..processed_items.len() {
                 processed_inputs.push(processed_items[j][i]);
             }
@@ -88,12 +87,13 @@ impl<
                 processed_items[j][i] = normalized_inputs[j];
             }
         }
-        println!("processed_items 2: {:?}", processed_items);
 
-        // Do foward propagation
-
-        for layer in self.layers {
-            //layer.forward(inputs);
+        // foward propagation
+        for items in processed_items {
+            let mut result_items = items;
+            for layer in self.layers {
+                result_items = layer.forward(&result_items)?;
+            }
         }
 
         Ok(TrainingResult {
@@ -117,7 +117,7 @@ impl<
 impl<
         'a,
         L: ToString + Eq + Hash + Clone + Into<L>,
-        V: ToString + Into<V> + AddAssign + Float + Clone + From<f64>,
+        V: ToString + Into<V> + AddAssign + Float + Clone + TryFrom<InputType> + AddAssign + DivAssign,
     > PerceptronNeuralModel<'a, L, V>
 {
     pub fn new(
@@ -137,7 +137,7 @@ impl<
 impl<
         'a,
         L: ToString + Eq + Hash + Clone + Into<L>,
-        V: ToString + Into<V> + AddAssign + Float + Clone + From<f64>,
+        V: ToString + Into<V> + AddAssign + Float + Clone + TryFrom<InputType> + AddAssign + DivAssign,
     > Serialize<String> for PerceptronNeuralModel<'a, L, V>
 {
     fn serialize(&self) -> String {
@@ -159,5 +159,16 @@ impl<
                 .map(|(key, value)| (L::from(key.to_string()), Box::new(V::from(value.to_string()))))
             .collect();
         */
+    }
+}
+
+fn try_from_v<
+    V: ToString + Into<V> + AddAssign + Float + Clone + TryFrom<InputType> + AddAssign + DivAssign,
+>(
+    item: InputType,
+) -> Result<V, Box<dyn Error>> {
+    match V::try_from(item) {
+        Ok(r) => Ok(r),
+        Err(_) => Err("Error generating random float".into()),
     }
 }
