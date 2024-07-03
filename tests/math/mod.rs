@@ -1,5 +1,7 @@
+pub mod binary_cross_entropy_loss_function_tests;
 pub mod identity_activation_function_tests;
 pub mod matrix_tests;
 pub mod mean_standard_deviation_normalizer_function_tests;
 pub mod sigmoid_activation_function_tests;
+pub mod softmax_normalizer_function_tests;
 pub mod tanh_activation_function_tests;

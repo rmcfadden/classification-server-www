@@ -1,9 +1,13 @@
 pub mod activation_function;
 pub mod activation_function_factory;
+pub mod binary_cross_entropy_loss_function;
 pub mod identity_activation_function;
+pub mod loss_function;
+pub mod loss_function_factory;
 pub mod matrix;
 pub mod mean_standard_deviation_normalizer_function;
 pub mod normalizer_function;
 pub mod normalizer_function_factory;
 pub mod sigmoid_activation_function;
+pub mod softmax_normalizer_function;
 pub mod tanh_activation_function;

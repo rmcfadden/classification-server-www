@@ -89,11 +89,17 @@ impl<
         }
 
         // foward propagation
+        let output_layer =
+            PerceptronLayer::<V>::new_with_random(self.outputs.len(), "sigmoid".to_string())?;
+
         for items in processed_items {
             let mut result_items = items;
             for layer in self.layers {
                 result_items = layer.forward(&result_items)?;
             }
+
+            let output_results = output_layer.forward(&result_items)?;
+            // Apply loss function
         }
 
         Ok(TrainingResult {
